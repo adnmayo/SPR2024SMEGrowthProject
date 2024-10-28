@@ -13,6 +13,7 @@ import { AlertDialogTrigger } from "@radix-ui/react-alert-dialog";
 import { DownloadIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
 const DashboardPage = () => {
   const [enterprises, setEnterprises] = useState<Enterprise[]>([]);
@@ -68,7 +69,7 @@ const DashboardPage = () => {
                 <th scope="col" className="py-3 px-6">
                   HGBs Identified
                 </th>
-                <th scope="col" className="py-3 px-6">
+                <th scope="col" className="py-3 px-6 text-center">
                   Growth
                 </th>
                 <th scope="col" className="py-3 px-6">
@@ -110,9 +111,53 @@ const DashboardPage = () => {
                       {enterprise.name}
                     </div>
                   </th>
-                  <td className="py-4 px-6">
-                    {enterprise.growthPotential &&
-                      enterprise.growthPotential + "%"}
+                  <td className="py-4 px-6 text-center">
+                    {enterprise.growthPotential && ((
+                      enterprise.growthPotential >= 0 && enterprise.growthPotential <= 20 && (
+                    <Badge
+                      variant="destructive"
+                      style={{ color: "rgb(0, 0, 0)", borderRadius: "0.5rem", fontSize: "0.60rem" }}
+                      className="h-7 w-24 px-3 py-1 inline-flex items-center font-normal justify-center gap-2 whitespace-nowrap rounded hover:bg-distructor/90"
+                    >
+                      Very Low
+                    </Badge>                    
+                    )) || (
+                      enterprise.growthPotential > 20  && enterprise.growthPotential <= 40 && (
+                    <Badge
+                      variant="warning"
+                      style={{ color: "rgb(0, 0, 0)", borderRadius: "0.5rem", fontSize: "0.60rem" }}
+                      className="h-7 w-24 px-3 py-1 inline-flex items-center font-normal justify-center gap-2 whitespace-nowrap rounded font-semibold hover:bg-warning/90"
+                    >
+                      Low
+                    </Badge>                    
+                    )) || (
+                      enterprise.growthPotential > 40  && enterprise.growthPotential <= 60 && (
+                    <Badge
+                      variant="highlight"
+                      style={{ color: "rgb(0, 0, 0)", borderRadius: "0.5rem", fontSize: "0.60rem" }}
+                      className="h-7 w-24 px-3 py-1 inline-flex items-center font-normal justify-center gap-2 whitespace-nowrap rounded font-semibold hover:bg-highlight/90"
+                    >
+                      Average
+                    </Badge>                    
+                    )) || (
+                      enterprise.growthPotential > 60  && enterprise.growthPotential <= 80 && (
+                    <Badge
+                      variant="highlight2"
+                      style={{ color: "rgb(0, 0, 0)", borderRadius: "0.5rem", fontSize: "0.60rem" }}
+                      className="h-7 w-24 px-3 py-1 inline-flex items-center font-normal justify-center gap-2 whitespace-nowrap rounded font-semibold hover:bg-highlight2/90"
+                    >
+                      High
+                    </Badge>                    
+                    )) || (
+                      enterprise.growthPotential > 80  && enterprise.growthPotential <= 100 && (
+                    <Badge
+                      variant="success"
+                      style={{ color: "rgb(0, 0, 0)", borderRadius: "0.5rem", fontSize: "0.60rem" }}
+                      className="h-7 w-24 px-3 py-1 inline-flex items-center font-normal justify-center gap-2 whitespace-nowrap rounded font-semibold hover:bg-success/90"
+                    >
+                      Very High
+                    </Badge>                    
+                    )))}
                   </td>
                   <td className="py-4 px-6">
                     {enterprise.numEmployees && enterprise.numEmployees}
