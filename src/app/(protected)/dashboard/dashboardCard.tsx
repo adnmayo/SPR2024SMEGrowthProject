@@ -14,6 +14,9 @@ import { DownloadIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { SortDropdown } from "@/components/SortDropdown";
+
+
 
 const DashboardPage = () => {
   const [enterprises, setEnterprises] = useState<Enterprise[]>([]);
@@ -22,6 +25,66 @@ const DashboardPage = () => {
   const [showEnterprise, setShowEnterprise] = useState<Enterprise>();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const [hover, setHover] = useState('');
+
+  const [nameSort, setNameSort] = useState<'asc' | 'desc' | undefined>(undefined);
+  const [growthSort, setGrowthSort] = useState<'highest' | 'lowest' | undefined>(undefined);
+  const [selectedGrades, setSelectedGrades] = useState<string[]>([]);
+
+  const getGrowthGrade = (growthPotential: number | undefined): string => {
+    if (typeof growthPotential !== 'number') return "Not Available";
+    if (growthPotential <= 20) return "Very Low";
+    if (growthPotential <= 40) return "Low";
+    if (growthPotential <= 60) return "Average";
+    if (growthPotential <= 80) return "High";
+    return "Very High";
+  };
+
+  const handleNameSort = (sort: 'asc' | 'desc' | undefined) => {
+    setNameSort(sort);
+  };
+  
+  const handleGrowthSort = (sort: 'highest' | 'lowest' | undefined) => {
+    setGrowthSort(sort);
+  };
+  
+  const handleGradeSelect = (grades: string[]) => {
+    setSelectedGrades(grades);
+  };
+
+  const getSortedEnterprises = () => {
+    let sorted = [...enterprises];
+  
+    // Name sorting remains the same
+    if (nameSort) {
+      sorted.sort((a, b) => {
+        if (nameSort === "asc") {
+          return a.name.localeCompare(b.name);
+        }
+        return b.name.localeCompare(a.name);
+      });
+    }
+  
+    // Updated growth sorting with null safety
+    if (growthSort) {
+      sorted.sort((a, b) => {
+        // Convert null/undefined to 0 for sorting
+        const aGrowth = typeof a.growthPotential === 'number' ? a.growthPotential : 0;
+        const bGrowth = typeof b.growthPotential === 'number' ? b.growthPotential : 0;
+        
+        return growthSort === "highest" ? bGrowth - aGrowth : aGrowth - bGrowth;
+      });
+    }
+  
+    // Updated grade filtering with null safety
+    if (selectedGrades.length > 0) {
+      sorted = sorted.filter((enterprise) => {
+        const grade = getGrowthGrade(enterprise.growthPotential ?? undefined);
+        return selectedGrades.includes(grade);
+      });
+    }
+  
+    return sorted;
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,30 +130,46 @@ const DashboardPage = () => {
             <thead className="text-xs text-gray-700 uppercase bg-gray-50">
               <tr>
                 <th scope="col" className="py-3 px-6">
-                  HGBs Identified
+                  <SortDropdown
+                    title="HGBS INDENTIFIED"
+                    type="name"
+                    onNameSort={handleNameSort}
+                  />
                 </th>
+
                 <th scope="col" className="py-3 px-6 text-center">
-                  Growth
+                  <SortDropdown
+                    title="GROWTH"
+                    type="growth"
+                    onGrowthSort={handleGrowthSort}
+                    onGradeSelect={handleGradeSelect}
+                    selectedGrades={selectedGrades}
+                  />
                 </th>
+
                 <th scope="col" className="py-3 px-6">
                   Number of Employees
                 </th>
+
                 <th scope="col" className="py-3 px-6">
                   Contacted
                 </th>
+
                 <th scope="col" className="py-3 px-6">
                   Connected
                 </th>
+
                 <th scope="col" className="py-3 px-6">
                   Engaged
                 </th>
+
                 <th scope="col" className="py-3 px-6">
                   
                 </th>
               </tr>
             </thead>
             <tbody>
-              {enterprises.map((enterprise) => (
+              {getSortedEnterprises().map((enterprise) => (
                 <tr 
                   className="bg-white border-b" 
                   key={enterprise.id}
