@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
@@ -40,6 +39,12 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
   const handleOpenChange = (open: boolean) => {
     if (open) {
       setTempSelectedGrades(selectedGrades || []);
+    } 
+    
+    else {
+      setTempNameSort(undefined);
+      setTempGrowthSort(undefined);
+      setTempSelectedGrades([]);
     }
     setIsOpen(open);
   };
@@ -47,7 +52,9 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
   const handleApply = () => {
     if (type === 'name') {
       onNameSort?.(tempNameSort);
-    } else {
+    } 
+    
+    else {
       onGrowthSort?.(tempGrowthSort);
       onGradeSelect?.(tempSelectedGrades);
     }
@@ -58,7 +65,9 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
     if (type === 'name') {
       setTempNameSort(undefined);
       onNameSort?.(undefined);
-    } else {
+    } 
+    
+    else {
       setTempGrowthSort(undefined);
       setTempSelectedGrades([]);
       onGrowthSort?.(undefined);
@@ -85,8 +94,6 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
       <DropdownMenuContent 
         align="start" 
         className="min-w-[200px]"
-        onPointerDownOutside={(e) => e.preventDefault()}
-        onInteractOutside={(e) => e.preventDefault()}
       >
         {type === 'name' && (
           <div className="space-y-2 p-1">
@@ -95,7 +102,10 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
                 "px-2 py-1.5 cursor-pointer rounded hover:bg-blue-50",
                 tempNameSort === 'asc' && "bg-blue-50"
               )}
-              onClick={() => setTempNameSort('asc')}
+              onClick={(e) => {
+                e.stopPropagation();
+                setTempNameSort('asc');
+              }}
             >
               A-Z
             </div>
@@ -104,7 +114,10 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
                 "px-2 py-1.5 cursor-pointer rounded hover:bg-blue-50",
                 tempNameSort === 'desc' && "bg-blue-50"
               )}
-              onClick={() => setTempNameSort('desc')}
+              onClick={(e) => {
+                e.stopPropagation();
+                setTempNameSort('desc');
+              }}
             >
               Z-A
             </div>
@@ -120,7 +133,10 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
                   "px-2 py-1.5 cursor-pointer rounded hover:bg-blue-50",
                   tempSelectedGrades.includes(grade) && "bg-blue-50"
                 )}
-                onClick={() => toggleGrade(grade)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleGrade(grade);
+                }}
               >
                 {grade}
               </div>
@@ -131,7 +147,10 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
                 "px-2 py-1.5 cursor-pointer rounded hover:bg-blue-50",
                 tempGrowthSort === 'lowest' && "bg-blue-50"
               )}
-              onClick={() => setTempGrowthSort('lowest')}
+              onClick={(e) => {
+                e.stopPropagation();
+                setTempGrowthSort('lowest');
+              }}
             >
               Lowest First
             </div>
@@ -140,7 +159,10 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
                 "px-2 py-1.5 cursor-pointer rounded hover:bg-blue-50",
                 tempGrowthSort === 'highest' && "bg-blue-50"
               )}
-              onClick={() => setTempGrowthSort('highest')}
+              onClick={(e) => {
+                e.stopPropagation();
+                setTempGrowthSort('highest');
+              }}
             >
               Highest First
             </div>
@@ -152,7 +174,10 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
           <Button
             variant="outline"
             size="sm"
-            onClick={handleReset}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleReset();
+            }}
             className="text-red-500 hover:text-red-700"
           >
             Reset
@@ -160,7 +185,10 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
           <Button
             variant="default"
             size="sm"
-            onClick={handleApply}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleApply();
+            }}
           >
             Apply
           </Button>
