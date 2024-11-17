@@ -1,3 +1,5 @@
+// REDEPLOYING FIXING FATAL CRASH
+
 "use client";
 import { readAllEnterprises } from "@/actions/enterprises/readAllEnterprises";
 import { getOrganisation } from "@/actions/organisations/readOrganisation";
